@@ -17,7 +17,12 @@ methods.handle = ({ name, token },body = null) => {
     console.log("Checking Name Config!")
 
     // checking if name param has matching object
-    if(!config.hasOwnProperty(name)) return false;
+    if(!config.hasOwnProperty(name)){
+        console.log('Project Object missing properties')
+        return false;
+    }
+
+    if(!methods.validateProject(name)) return false;
 
     console.log("Checking Has Body!")
 
@@ -37,26 +42,34 @@ methods.handle = ({ name, token },body = null) => {
 }
 
 methods.find = name => {
-    return config.hasOwnProperty(name);
+    return config.project.hasOwnProperty(name);
+}
+
+methods.validateProject = name => {
+    let projConf = config.project[name];
+    return projConf.hasOwnProperty('token') && 
+           projConf.hasOwnProperty('last') && 
+           projConf.hasOwnProperty('portIn') && 
+           projConf.hasOwnProperty('portOut');    
 }
 
 methods.script = name => {
-    return config[name].script || false
+    return config.project[name].script || false
 }
 
 methods.authenticate = (name,token) => {
-    return config[name].token === token;
+    return config.project[name].token === token;
 }
 
 // checking if last update was less than 5 minutes ago ( to block repeated requests )
 methods.timeout = name => {
     console.log(`Checking timeout Property In ${name}`)
-    return Date.now() - config[name].last >= 320000
+    return Date.now() - config.project[name].last >= 320000
 }
 
 methods.updateTimeout = name => {
     console.log(`Updating timeout Property In ${name}`)
-    config[name].last = Date.now();
+    config.project[name].last = Date.now();
     fs.writeFileSync('./config.json', JSON.stringify(config));  
 }
 
@@ -99,7 +112,7 @@ methods.execute = (name, body) => {
         console.log("Docker Image does not exist or incorrect name, nothing removed!")
     }
 
-    if(shell.exec(`docker run -d --name ${body.repository.name} -p ${config[name].portOut}:${config[name].portIn} ${body.repository.repo_name}`).code !== 0){
+    if(shell.exec(`docker run -d --name ${body.repository.name} -p ${config.project[name].portOut}:${config.project[name].portIn} ${body.repository.repo_name}`).code !== 0){
         console.log("Docker !")
     } else {
         console.log(`Docker Image ${body.repository.repo_name} Started Successfully!`)
