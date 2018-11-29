@@ -1,0 +1,12 @@
+{
+    "cred":{
+        "user":null,
+        "pass":null
+    },
+    "ci-cd-test":{
+        "token":"0C41CA4AFF43EB553AF275C9957A20F1D9B2904B7451A976E7DA8AE89553DC81A829ADFA154980C27E62A2533F8DA6925039625E6552379B728163742163FC2C",
+        "portIn":80,
+        "portOut":3000,
+        "last":1543515634316
+        }
+    }
