@@ -1,3 +1,4 @@
+const Crypto = require('crypto-random-string');
 
 const chalk = require('chalk');
 
@@ -147,30 +148,34 @@ methods.removeProject = name => {
 
 }
 
-methods.modifyProject = ( name, portIn, portOut, token ) => {
+methods.modifyProject = ( name, portIn, portOut ) => {
+
+    const token = methods.generateKey(128);
 
     if(methods.find(name)){
-        
         log(chalk.yellow(`Docker Project ${name} exists already, overwriting existing project config!`));
-    
-        config.project[name] = {
-            "portIn"  : portIn,
-            "portOut" : portOut,
-            "token"   : token,
-            "last"    : 0
-        } 
-    
-        methods.configWrite(config);
-        
     } else {
-
         log(chalk.green(`Docker project ${name} added successfully`));
-
     }
+
+    log(`Generated New Token : \n\n${chalk.blue(token)}\n\nUse this token in the webhook url on docker hub eg:\n\n<url>/?name=${chalk.red(name)}token=${chalk.blue(token)}
+    `)
+
+    config.project[name] = {
+        "portIn"  : portIn,
+        "portOut" : portOut,
+        "token"   : token,
+        "last"    : 0
+    } 
+
+    methods.configWrite(config);
+    
 
 }
 
-
+methods.generateKey = ( length = 64 ) => {
+    return Crypto(length)
+}
 
 methods.resetConfig = () => {
 

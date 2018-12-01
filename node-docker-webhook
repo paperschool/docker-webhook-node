@@ -97,8 +97,6 @@ const modifyProject = () => {
 
     const portOut = args[5] || false;
 
-    const token = args[6] || false;
-
     const projectUsage = `
 
         Incorrect project addition arguments.
@@ -107,8 +105,8 @@ const modifyProject = () => {
 
     `; 
 
-    if(name && portIn && portOut && token){
-        config.modifyProject(name,portIn,portOut,token);
+    if(name && portIn && portOut){
+        config.modifyProject(name,portIn,portOut);
     } else {
         log(projectUsage);
         return false;
@@ -160,3 +158,4 @@ const arg = () => {
 }
 
 arg();
+
