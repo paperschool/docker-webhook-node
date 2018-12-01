@@ -1,14 +1,7 @@
 {
-    "cred":{
-        "user":null,
-        "pass":null
+    "cred": {
+        "user": null,
+        "pass": null
     },
-    "project" : {
-        "example-name" : {
-            "token"   : "some-token",
-            "last"    : 0,
-            "portIn"  : 80,
-            "portOut" : 80
-        }
-    }
+    "project": {}
 }
