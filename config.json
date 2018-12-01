@@ -3,5 +3,12 @@
         "user": null,
         "pass": null
     },
-    "project": {}
+    "project": {
+        "ci-cd-test": {
+            "portIn": "3000",
+            "portOut": "80",
+            "token": "6415bd7ab077370a6de077dc428e5f22bb2289ccf196de22c780ea0ce2c109a098600f204df73765df2c924e6f93dbede2a2cc835d894af0dc57e3510ae25e85",
+            "last": 0
+        }
+    }
 }

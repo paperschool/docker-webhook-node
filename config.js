@@ -158,7 +158,7 @@ methods.modifyProject = ( name, portIn, portOut ) => {
         log(chalk.green(`Docker project ${name} added successfully`));
     }
 
-    log(`Generated New Token : \n\n${chalk.blue(token)}\n\nUse this token in the webhook url on docker hub eg:\n\n<url>/?name=${chalk.red(name)}token=${chalk.blue(token)}
+    log(`Generated New Token : \n\n${chalk.blue(token)}\n\nUse this token in the webhook url on docker hub eg:\n\n<url>/?name=${chalk.red(name)}&token=${chalk.blue(token)}
     `)
 
     config.project[name] = {
