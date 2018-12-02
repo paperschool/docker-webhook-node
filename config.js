@@ -1,5 +1,7 @@
 const Crypto = require('crypto-random-string');
 
+const request = require('request');
+
 const chalk = require('chalk');
 
 const config = require('./config.json');
@@ -35,8 +37,10 @@ methods.handle = ({ name, token },body = null) => {
         
     }
 
-    if(!body) return false;
-
+    if(!methods.validateBody(body)){
+         return false;
+    }
+    
     // checking name and token combination is successful
     if(!methods.authenticate(name,token)){
         log(chalk.red('Request Token not valid!'));
@@ -53,8 +57,19 @@ methods.handle = ({ name, token },body = null) => {
         log(chalk.green('Image out of date!'));
     }
 
-    return methods.execute(name,body);
+    return methods.execute(name,body)
 
+}
+
+methods.respond = url => {
+    request(url, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            log(chalk.green('Docker Hub Callback Successful'))
+        } else {
+            log(chalk.red('Docker Hub Callback unSuccessful'))
+        }
+    })
+    return true;
 }
 
 methods.find = name => {
@@ -67,6 +82,37 @@ methods.validateProject = name => {
            projConf.hasOwnProperty('last') && 
            projConf.hasOwnProperty('portIn') && 
            projConf.hasOwnProperty('portOut');    
+}
+
+methods.validateBody = body => {
+
+    if(!body){
+        log(chalk.red('Missing Body Object!'));
+        return false;
+    }
+
+    if(!body.hasOwnProperty('repository')){
+        log(chalk.red('Body missing repository object!'));
+        return false;
+    }
+
+    if(!body.repository.hasOwnProperty('name')){
+        log(chalk.red('Repository missing name property!'));
+        return false;
+    } 
+
+    if(!body.repository.hasOwnProperty('repo_name')){
+        log(chalk.red('Repository missing repo_name property!'));
+        return false;
+    } 
+
+    if(!body.hasOwnProperty('callback_url')){
+        log(chalk.red('Repository missing callback url property!'));
+        return false;
+    } 
+
+    return true;
+
 }
 
 methods.script = name => {
@@ -224,12 +270,14 @@ methods.execute = (name, body) => {
     }
 
     if(shell.exec(`docker run -d --name ${body.repository.name} -p ${config.project[name].portOut}:${config.project[name].portIn} ${body.repository.repo_name}`).code !== 0){
-        log(chalk.red("Docker !"));
+        log(chalk.red("Docker Image not started!"));
     } else {
         log(chalk.green(`Docker Image ${body.repository.repo_name} Started Successfully!`));
     }
 
     methods.updateTimeout(name);
+
+    methods.respond(body.callback_url);
 
     return true
 
