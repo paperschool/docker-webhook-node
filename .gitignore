@@ -3,6 +3,7 @@
 
 #expect this
 !.gitignore
+!README.md
 !package.json
 !package-lock.json
 !config.js

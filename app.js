@@ -103,7 +103,7 @@ const modifyProject = () => {
 
         Incorrect project addition arguments.
 
-        node-docker-webhook add-project <name> <inbound port> <outbound port> <token>
+        node-docker-webhook add-project <name> <inbound port> <outbound port>
 
     `; 
 
