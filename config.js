@@ -8,7 +8,11 @@ const shell = require('shelljs');
 
 const fs = require('fs');
 
+const path = require('path');
+
 const log = console.log;
+
+const configPath = path.join(process.cwd(),'config.json');
 
 let config;
 
@@ -17,7 +21,7 @@ const methods = {};
 methods.init = () => {
     // establishing config file if new install or file damaged
     if(methods.establishConfig()){
-        config = require('./config.json');
+        config = require(configPath);
     }
 }
 
@@ -231,8 +235,8 @@ methods.generateKey = ( length = 64 ) => {
 }
 
 methods.establishConfig = () => {
-    if (!fs.existsSync('./config.json')) {
-        fs.writeFileSync('./config.json','','ascii');
+    if (!fs.existsSync(configPath)) {
+        fs.writeFileSync(configPath,'','ascii');
         methods.resetConfig(true);
     }
     return true;
@@ -254,7 +258,7 @@ methods.resetConfig = (silent = false) => {
 }
 
 methods.configWrite = c => {
-    fs.writeFileSync('./config.json', JSON.stringify(c, null, 4));
+    fs.writeFileSync(configPath, JSON.stringify(c, null, 4));
 }
 
 methods.printConfig = () => {
