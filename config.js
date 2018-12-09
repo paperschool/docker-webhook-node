@@ -4,15 +4,22 @@ const request = require('request');
 
 const chalk = require('chalk');
 
-const config = require('./config.json');
-
 const shell = require('shelljs');
 
 const fs = require('fs');
 
 const log = console.log;
 
+let config;
+
 const methods = {};
+
+methods.init = () => {
+    // establishing config file if new install or file damaged
+    if(methods.establishConfig()){
+        config = require('./config.json');
+    }
+}
 
 methods.handle = ({ name, token },body = null) => {
 
@@ -223,7 +230,15 @@ methods.generateKey = ( length = 64 ) => {
     return Crypto(length)
 }
 
-methods.resetConfig = () => {
+methods.establishConfig = () => {
+    if (!fs.existsSync('./config.json')) {
+        fs.writeFileSync('./config.json','','ascii');
+        methods.resetConfig(true);
+    }
+    return true;
+}
+
+methods.resetConfig = (silent = false) => {
 
     const newConfig = {
         "cred" : {
@@ -234,8 +249,8 @@ methods.resetConfig = () => {
     }
 
     methods.configWrite(newConfig);
-    
-    log(chalk.green('Docker config reset!'))
+
+    if(!silent) log(chalk.green('Docker config reset!'))
 }
 
 methods.configWrite = c => {

@@ -1,14 +1,7 @@
 {
     "cred": {
-        "user": "thesysoverlord",
-        "pass": "45sB6RE3TK8b9rf"
+        "user": null,
+        "pass": null
     },
-    "project": {
-        "ci-cd-test": {
-            "portIn": "80",
-            "portOut": "3000",
-            "token": "ccdeaca6da34a44f5a96de14e8520b70dcae3e51e7276b3562da091538b31526ce13b75c4f6113e601ec41c9e0f9e0853ffe200e7f7e82544f3de8f46628586a",
-            "last": 1543680717153
-        }
-    }
+    "project": {}
 }

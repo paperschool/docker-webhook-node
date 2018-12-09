@@ -10,6 +10,8 @@ const server = require('./server');
 //
 const config = require('./config.js')
 
+config.init();
+
 //
 const args = process.argv
 
