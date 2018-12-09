@@ -9,6 +9,3 @@
 !config.js
 !app.js
 !server.js
-!bin/node-docker-webhook-linux
-!bin/node-docker-webhook-macos
-!bin/node-docker-webhook-win.exe
