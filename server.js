@@ -17,33 +17,33 @@ const log = console.log;
 
 module.exports = () => {
 
-    if(!config.login()) return;
-    
+    if (!config.login()) return;
+
     app.use(bodyparser.json());
-    
-    app.listen(PORT,() => {
-        log(chalk.green(`Docker Webhook - Server Listening on PORT ${PORT}`))
-    });
-    
-    app.get('/',(req,res) => {
+
+    app.get('/', (req, res) => {
 
         log(chalk.green('Webhook Front End Hit!'));
         res.send('Docker Webhook Frontend is Up!');
     });
-    
-    app.post('/',(req,res) => {
-        
+
+    app.post('/', (req, res) => {
+
         log(chalk.green('Webhook Hit!'));
-                
-        if(config.handle(req.query,req.body)){
+
+        if (config.handle(req.query, req.body)) {
             log(chalk.green('Hook Triggered Restart!'));
             res.send('Hook Triggered Restart!');
         } else {
             log(chalk.red('Incorrect Config'));
             res.send('Incorrect Config!');
         }
-    
+
     })
+
+    app.listen(PORT, () => {
+        log(chalk.green(`Docker Webhook - Server Listening on PORT ${PORT}`))
+    });
 
 }
 

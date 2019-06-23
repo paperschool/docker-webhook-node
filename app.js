@@ -18,22 +18,24 @@ const args = process.argv
 // 
 const log = console.log;
 
-// usage represents the help guide
-const usage = function() {
+const appName = "node-docker-webhook"
 
-  const usageText = `
+// usage represents the help guide
+const usage = function () {
+
+    const usageText = `
   Node-docker-webhook allows you to set up a listening server to intercept docker image repository changes.
 
   usage:
   
-    ${chalk.blue('node-docker-webhook')} ${chalk.yellow('<command>')}
+    ${chalk.blue(appName)} ${chalk.yellow('<command>')}
 
     commands:
 
     ${chalk.green('start')}:            used to start webhook server
     
     ${chalk.yellow('login')}:            used to add login credentials to config and test login
-    ${chalk.yellow('try-login:')}        used to test config login credentials
+    ${chalk.yellow('try-login')}:        used to test config login credentials
     ${chalk.red('reset-login')}:      used to reset login credentials 
 
     ${chalk.yellow('add-project')}:      used to add a new project config
@@ -42,14 +44,15 @@ const usage = function() {
     
     ${chalk.red('reset')}:            used to Delete all user config ( Use with Caution ) 
     ${chalk.yellow('config')}:           used to print out config 
+    ${chalk.yellow('timeout')}:          used to update the docker webhook timeout 
     ${chalk.yellow('help')}:             used to print the usage guide
   `
-  console.log(usageText)
+    console.log(usageText)
 }
 
 
 const login = () => {
-    
+
     const user = args[3] || false;
     const pass = args[4] || false;
 
@@ -57,12 +60,12 @@ const login = () => {
 
         Incorrect login arguments. 
 
-        ${chalk.blue('node-docker-webhook')} ${chalk.yellow('login')} <username> <password>
+        ${chalk.blue(appName)} ${chalk.yellow('login')} <username> <password>
 
     `;
 
-    if(config.login(true,user,pass)){
-        config.setLogin(user,pass);
+    if (config.login(true, user, pass)) {
+        config.setLogin(user, pass);
     } else {
         log(loginUsage);
     }
@@ -77,11 +80,11 @@ const removeProject = () => {
 
         Incorrect project removal arguments.
 
-        ${chalk.blue('node-docker-webhook')} ${chalk.yellow('remove-project')} <name>
+        ${chalk.blue(appName)} ${chalk.yellow('remove-project')} <name>
 
-    `; 
+    `;
 
-    if(name){
+    if (name) {
         config.removeProject(name);
     } else {
         log(projectUsage);
@@ -102,14 +105,35 @@ const modifyProject = () => {
 
         Incorrect project addition arguments.
 
-        ${chalk.blue('node-docker-webhook')} ${chalk.yellow('add-project')} <name> <inbound port> <outbound port>
+        ${chalk.blue(appName)} ${chalk.yellow('add-project')} <name> <inbound port> <outbound port>
 
-    `; 
+    `;
 
-    if(name && portIn && portOut){
-        config.modifyProject(name,portIn,portOut);
+    if (name && portIn && portOut) {
+        config.modifyProject(name, portIn, portOut);
     } else {
         log(projectUsage);
+        return false;
+    }
+
+}
+
+const setWebhookTimeout = () => {
+
+    const webhookTimeout = args[3] || false;
+
+    const webhookTimeoutUsage = `
+
+        Incorrect webhook timeout argument.
+
+        ${chalk.blue(appName)} ${chalk.yellow('timeout')} <time in ms>
+
+    `;
+
+    if (webhookTimeout && parseInt(webhookTimeout) > 0) {
+        config.setWebhookTimeout(webhookTimeout);
+    } else {
+        log(webhookTimeoutUsage);
         return false;
     }
 
@@ -121,38 +145,41 @@ const arg = () => {
 
     // 
     switch (program) {
-        case 'start': 
+        case 'start':
             server();
             break;
-        case 'login': 
+        case 'login':
             login();
             break;
-        case 'try-login': 
+        case 'try-login':
             config.login(false);
-            break; 
-        case 'reset-login': 
+            break;
+        case 'reset-login':
             config.resetLogin();
-            break; 
+            break;
         case 'add-project':
             modifyProject();
             break;
         case 'edit-project':
             modifyProject();
-            break;    
+            break;
         case 'remove-project':
             removeProject();
             break;
-        case 'reset': 
+        case 'reset':
             config.resetConfig();
             break;
-        case 'config': 
+        case 'config':
             config.printConfig();
             break;
-        case 'help': 
+        case 'timeout':
+            setWebhookTimeout();
+            break;
+        case 'help':
             usage();
             break;
-        default: 
-            usage(); 
+        default:
+            usage();
             break;
     }
 
