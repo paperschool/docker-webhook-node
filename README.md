@@ -59,6 +59,7 @@ To start the cli application simply enter the name of the execuitable in your sh
 | | | 
 | ```reset```  | n/a | This comnmand will fully reset the server config of login credentials and project blocks |
 | ```config```  | n/a | This comnmand will output the current state of the config |
+| ```timeout```  | n/a | This command will allow you to specify a new integer cooldown in ms for ignoring docker hooks |
 | ```help```  | n/a | A print out of all possible commands and their descriptions. |
 
 ### Project Block
@@ -77,7 +78,8 @@ This will generate a new project block in the server config file like this :
         "portIn" : "80",
         "portOut": "3000",
         "token"  : <generated-token>,
-        "last"   : <generated-epoch-timestamp>
+        "last"   : <generated-epoch-timestamp>,
+        "sha"   : <running-docker-container-sha>
     }
 }
 ```
@@ -96,8 +98,6 @@ Use this token in the webhook url on docker hub eg:
 ### Adding Dockerhub Webhook
 
 The generated url can then be copied into the webhook property inside the repo on dockerhub. Any time the repo is updated, a request will be made to that url including both the project block name property and the token, if both match the config on the listening server, then the application will redeploy the image.
-
-![image](./screenshots/dockerhub.jpg)
 
 ### Authenticating Request
 
