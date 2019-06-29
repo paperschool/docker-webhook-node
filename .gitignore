@@ -6,6 +6,5 @@
 !README.md
 !package.json
 !package-lock.json
-!config.js
-!app.js
-!server.js
+!app/
+!app/*
