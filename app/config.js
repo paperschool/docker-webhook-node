@@ -8,7 +8,7 @@ const fs = require('fs');
 
 const path = require('path');
 
-const log = console.log;
+const log = require("./log");
 
 const dockerCommands = require("./docker");
 
@@ -151,7 +151,7 @@ methods.updateProjectTimeout = name => {
 methods.updateProjectSha = (name, sha) => {
     log(chalk.yellow(`Updating sha Property In ${name}`));
     config.project[name].sha = sha.replace(/['\r?\n|\r]*/gmi, '');
-    console.log(config.project[name].sha)
+    log(config.project[name].sha)
     methods.configWrite(config);
 }
 
@@ -222,7 +222,7 @@ methods.removeProject = name => {
 
 }
 
-methods.modifyProject = (name, portIn, portOut) => {
+methods.modifyProject = (name, newName, portIn, portOut) => {
 
     const token = methods.generateKey(128);
 
@@ -235,12 +235,18 @@ methods.modifyProject = (name, portIn, portOut) => {
     log(`Generated New Token : \n\n${chalk.blue(token)}\n\nUse this token in the webhook url on docker hub eg:\n\n<url>/?name=${chalk.red(name)}&token=${chalk.blue(token)}
     `)
 
-    config.project[name] = {
+    const newProject = {
         "portIn": portIn,
         "portOut": portOut,
         "token": token,
         "last": 0
     }
+
+    // delete old project
+    delete config.project[name];
+
+    // append new project
+    config[newName] = newProject
 
     methods.configWrite(config);
 }
@@ -273,8 +279,8 @@ methods.resetConfig = (silent = false) => {
     if (!silent) log(chalk.green('Docker config reset!'))
 }
 
-methods.configWrite = c => {
-    fs.writeFileSync(configPath, JSON.stringify(c, null, 4));
+methods.configWrite = config => {
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
 }
 
 methods.printConfig = () => {

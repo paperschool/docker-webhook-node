@@ -16,7 +16,7 @@ config.init();
 const args = process.argv
 
 // 
-const log = console.log;
+const log = require("./log");
 
 const appName = "node-docker-webhook"
 
@@ -97,9 +97,11 @@ const modifyProject = () => {
 
     const name = args[3] || false;
 
-    const portIn = args[4] || false;
+    const newName = args[4] || false;
 
-    const portOut = args[5] || false;
+    const portIn = args[5] || false;
+
+    const portOut = args[6] || false;
 
     const projectUsage = `
 
@@ -109,8 +111,8 @@ const modifyProject = () => {
 
     `;
 
-    if (name && portIn && portOut) {
-        config.modifyProject(name, portIn, portOut);
+    if (name && newName && portIn && portOut) {
+        config.modifyProject(name, newName, portIn, portOut);
     } else {
         log(projectUsage);
         return false;
