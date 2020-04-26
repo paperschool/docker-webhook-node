@@ -51,7 +51,6 @@ module.exports = (env, { mode }) => {
         stats: {
             warnings: false
         },
-
         watch: !isProduction,
     }
 }
