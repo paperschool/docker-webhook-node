@@ -1,20 +1,28 @@
-# Node Dockerhub Webhook
+# Docker Node Webhook
 
-The purpose of this project was to create a listening server for catching dockerhub webhook requests for use with ci/cd pipelines. The application runs as a cli for managing and configuring the embdedded webhook listening server. 
+The purpose of this project was to create a light weight server for intercepting [Docker Hub Webhook](https://docs.docker.com/docker-hub/webhooks/) Requests to trigger containeer restarts for use within a simplistic ci/cd system. The application runs as a cli allows for starting the server as well as for managing the configuration the server will use. 
+
+**n.b.** This is not a replacement for tools such as [**kuberntes**](https://kubernetes.io/) and should be used only for simple use cases, container orchestration can be a complex problem to solve and appropriate tools should always be used when possible!
 
 ### Table of contents 
 
-- [Node Dockerhub Webhook](#node-dockerhub-webhook)
-    - [Table of contents](#table-of-contents)
-  - [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installing](#installing)
-  - [Usage](#usage)
-    - [Commands](#commands)
-    - [Project Block](#project-block)
-  - [Authors](#authors)
-  - [License](#license)
-  - [Built With](#built-with)
+- [Docker Node Webhook](#docker-node-webhook)
+  * [Getting Started](#getting-started)
+    + [Prerequisites](#prerequisites)
+    + [Installing](#installing)
+    + [Running](#running)
+  * [Usage](#usage)
+    + [Commands](#commands)
+      - [Server Command](#server-command)
+      - [Project Command](#project-command)
+      - [Login Command](#login-command)
+      - [Timeout Command](#timeout-command)
+      - [Print Command](#print-command)
+      - [Reset Command](#reset-command)
+      - [Help Command](#help-command)
+    + [Concepts](#concepts)
+      - [Project Block](#project-block)
+  * [Built With](#built-with)
 
 ## Getting Started
 
@@ -29,9 +37,17 @@ In order to run the project from source you will need :
 
 ### Installing
 
-If running the project from source, once cloned and/or unpacked navigate into the project and run ```npm install``` to install all required dev and runtime dependencies.
+#### Dependencies
 
-If running from a binary simply drag the execuitable to a location of choice on your server / deployment enviornment.
+If running the project from source, once cloned and/or unpacked navigate into the project and run ```yarn``` to install all required dev and runtime dependencies.
+
+#### Building
+
+To build a production candidate run ```yarn build:prod``` which will compile all required files to a bin folder.
+
+### Running
+
+When within the project directory running ```node .``` or will enter access to the cli tool. If the package is installed from NPM globally this can be accessed via ```dwn```.
 
 ## Usage
 
@@ -39,75 +55,157 @@ When Initially running the application, the program will attempt to locate a loc
 
 ### Commands
 
-To start the cli application simply enter the name of the execuitable in your shell of choice. eg
+To start the cli application simply enter the name of the executable in your shell of choice. eg
 
 ```
-./node-docker-webhook-linux [command] <options>
+dwn [command] <options>
 ```
 
+#### Server Command
 
-| Command | Options | Description |
-| :------------- |:-------------| :--- |
-| ```start``` | n/a | This will start the webhook server on port 7777. |
-| ```login``` | ```<username> <password>``` | This will take the username and password arguments and attempt to login to docker with them, if successful will append the credientials to the server config file. **note credentials saved in plaintext**. |
-| ```try-login```  | n/a | This command will attempt to login to docker with the current  credentials in the server config. |
-| ```reset-login```  | n/a | This command will clear all saved credentials in the server config file. |
-| | |
-| ```add-project```  | ```<project-name> <inbound-port> <outbound-port>``` | This command will add a project block under ```project-name``` in the server config file which the server will reference when a webhook request hits the server. The port specification is to choose the ports the docker container will expose externally and internally. A 128 character key is also generated as a token for the webhook which will be output to be added a paramter to the webhook url. |
-| ```edit-project```  | ```<project-name> <inbound-port> <outbound-port>``` | This command will edit a project block under the name ```project-name``` in the server config file. Simply replace any variables in the command with the new ones and the block will be updated. **The 128 character token will also be regenerated.** |
-| ```remove-project```  | ```<project-name>``` | This command will remove a project block under the server config file under the name ```<project-name>``` |
-| | | 
-| ```reset```  | n/a | This comnmand will fully reset the server config of login credentials and project blocks |
-| ```config```  | n/a | This comnmand will output the current state of the config |
-| ```timeout```  | n/a | This command will allow you to specify a new integer cooldown in ms for ignoring docker hooks |
-| ```help```  | n/a | A print out of all possible commands and their descriptions. |
+This command will start the webhook listening server
 
-### Project Block
+```
+dwn server
+```
 
-This application can listen in on an any number of webhook requests to restart any number of docker images. In order to seperate out the requests however the application expects in the webhook url a name variable which refers to a project block in the config file.
+#### Project Command
+
+This command has **three** sub commands all relevant to managing project blocks within the cli:
+
+##### New Project
+
+The `project new` sub-command accepts three required options a `project-name` value, a `port-in` value and a `port-out` value. All three are enough to generate a new project block within the configuration for the server.
+
+```
+dwn project new -pn my-project -pi 3000 -po 3000
+```
+
+##### Edit Projct 
+
+The `project edit` sub-command accepts three required options and one optional one. It takes an `existing-project-name` value, the optional `new-project-name` value a `port-in` value and a `port-out` value.
+
+```
+dwn projct edit -en my-project -nn my-project-v2 -pi 3000 -po 3000
+```
+
+##### Remove Project 
+
+The `project remove` sub-command accepts one required option, the `project-name` of the projected selected for deletion.
+
+```
+dwn projct edit -en my-project -nn my-project-v2 -pi 3000 -po 3000
+```
+
+#### Login Command
+
+This command has **three** sub commands all relevant to authenticating with docker:
+
+##### New Login
+
+The `login new` sub-command accepts two required options a `username` value and a `password` value. When entered the command will attempt to login with these details and then if successful will store the credentials in the config file.
+
+```
+dwn login new -u <username> -p <password>
+```
+
+##### Try Login
+
+The `login try` sub-command will attempt to authenticate with docker using credentials stored in the config file.
+
+```
+dwn login try
+```
+
+##### Reset Login
+
+The `login reset` sub-command will delete all authentication credentials stored in the config file.
+
+```
+dwn login reset
+```
+
+#### Timeout Command
+
+This command accepts a single required option, the desired cool down `time` ( in ms ) before valid webhooks are allowed to interrupt running projects:
+
+```
+dwn timeout -t 60000
+```
+
+#### Print Command
+
+This command accepts no arguments and serves to output the entire config file.
+
+```
+dwn print
+```
+
+#### Reset Command
+
+This command accepts no arguments and serves to reset the entire config file.
+
+```
+dwn print
+```
+
+#### Help Command
+
+Provides a guide on all available commands at any given sub/command level.
+
+```
+dwn help
+```
+
+### Concepts
+
+#### Project Block
+
+This application can listen in on an any number of webhook requests to restart any number of docker images. In order to separate out the requests however the application expects in the webhook url a project name variable which refers to a project block in the config file as well as a token value which will be used to ensure parity between a webhook request and an internal managed image.
 
 To setup a new project block run the command : 
 
-```node-docker-webhook new-project some-project-name 80 3000```
+```dwn project new -pn my-project -pi 80 -po 3000```
 
 This will generate a new project block in the server config file like this :
 
 ```JSON
 {
     "some-project-name": {
-        "portIn" : "80",
+        "portIn": "80",
         "portOut": "3000",
-        "token"  : <generated-token>,
-        "last"   : <generated-epoch-timestamp>,
-        "sha"   : <running-docker-container-sha>
+        "token": <generated-token>,
+        "dateTimeCreated": <generated-epoch-timestamp>,
+        "dateTimeEdited": <generated-epoch-timestamp>,
+        "sha": <running-docker-container-sha>
     }
 }
 ```
 
-The command will output an example url with name and token parameters that should be modified with your domain and copied into the webhook input on dockerhub :
+The application will first output the generated token eg: 
 
 ```
-Generated New Token : 
-
 59b9aea675f538498ac2f73be70ee9f010d08949216ca6ecacc7dfc340b6d424ec651352de735e9ea49701523442288c9425c2895dabbd7eb57aa738c84191c1
-
-Use this token in the webhook url on docker hub eg:
-
-<url>/?name=some-project-name&token=59b9aea675f538498ac2f73be70ee9f010d08949216ca6ecacc7dfc340b6d424ec651352de735e9ea49701523442288c9425c2895dabbd7eb57aa738c84191c1
 ```
-### Adding Dockerhub Webhook
 
-The generated url can then be copied into the webhook property inside the repo on dockerhub. Any time the repo is updated, a request will be made to that url including both the project block name property and the token, if both match the config on the listening server, then the application will redeploy the image.
+Then will output an example url with name and token parameters that should be modified with the host the webhook server is running on and copied into the webhook input on dockerhub :
 
-### Authenticating Request
+```
+<url>/?projectName=some-project-name&token=59b9aea675f538498ac2f73be70ee9f010d08949216ca6ecacc7dfc340b6d424ec651352de735e9ea49701523442288c9425c2895dabbd7eb57aa738c84191c1
+```
+#### Adding Dockerhub Webhook
 
-When a webhook hits the server the request url has two parameters, a project block name and a token. If both the project block name exists in the server config and the token matches the token in the project block then the web hook is accepted. 
+The generated url can then be copied into a new webhook inside the webhook config editor dockerhub. Any time a new docker image is pushed to the given repo, a request will be made to all configured webhooks in docker hub.The request should include both the project name  and the token, if both match the config on the webhook server, then the application will pull this image, stop the currently running image and start the new image.
+
+#### Authenticating Request
+
+When a webhook hits the server the request url has two query parameters, a project name and a token. If both the project name exists in the server config and the token matches the token in the project block then the web hook is accepted. 
 
 The request body ( provided by docker hub ) is then validated for all required information to successfully pull the image. 
 
-### Re/Deployment
+#### Re/Deployment
 
-When the application recieves an authenticated request, the request body is scraped of all required information and an embedded script is ran :
+When the application recieves an authenticated request, the request body is scraped of all required information and a series of docker commands are ran:
 
 - The config login credentials are used to login to docker
 - The docker image repo outlined in the request body is pulled
@@ -118,15 +216,18 @@ When the re-deployment is successful a variable is updated in the project block 
 
 Finally the callback url in the webhook is hit to close the loop.
 
-## Authors
+### Authors
 
 * **Dominic Jomaa** - [Paperschool](https://github.com/paperschool)
 
-## License
+### License
 
 This project is licensed under the MIT License
 
-## Built With
+### Built With
 
-* [PKG](https://github.com/zeit/pkg) - Packaging tool for producing binaries from node projects.
+- [Express](https://expressjs.com)
+- [Typescript](https://www.typescriptlang.org/)
+- [NodeJs](https://nodejs.org/en/)
+- [Docker](https://www.docker.com/)
 

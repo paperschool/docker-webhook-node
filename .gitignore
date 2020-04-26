@@ -1,10 +1,15 @@
 #ignore everything
 *
 
-#expect this
+#except this
 !.gitignore
 !README.md
 !package.json
-!package-lock.json
+!yarn.lock
 !app/
-!app/*
+!app/**
+!build/
+!build/*
+!tsconfig.json
+!tslint.json
+!.babelrc

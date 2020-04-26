@@ -1,21 +1,54 @@
 {
-  "name": "Node",
-  "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "name": "docker-node-webhook",
+  "version": "0.0.2",
+  "description": "A dockerhub webhook listening server that manages container pulls/restarts when triggered.",
+  "author": "Dominic Jomaa - (https://github.com/paperschool)",
   "keywords": [],
-  "author": "",
   "license": "ISC",
+  "main": "./bin/index.js",
+  "files": [
+    "bin/*"
+  ],
+  "bin": {
+    "dwn": "./bin/index.js"
+  },
+  "scripts": {
+    "start": "node .",
+    "start:dev": "nodemon .",
+    "build:prod": "webpack --mode=production --config ./build/webpack.config.js",
+    "build:dev": "webpack --mode=development --config ./build/webpack.config.js"
+  },
   "dependencies": {
+    "@babel/runtime": "^7.9.2",
     "body-parser": "^1.18.3",
-    "chalk": "^2.4.1",
+    "chalk": "^4.0.0",
+    "commander": "^5.0.0",
     "crypto-random-string": "^1.0.0",
     "express": "^4.16.4",
     "express-session": "^1.16.2",
-    "request": "^2.88.0",
+    "node-fetch": "^2.6.0",
     "shelljs": "^0.8.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.9.5",
+    "@babel/plugin-transform-runtime": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "@babel/preset-typescript": "^7.9.0",
+    "@types/express": "^4.17.6",
+    "@types/node-fetch": "^2.5.7",
+    "@types/request": "^2.48.4",
+    "@types/shelljs": "^0.8.7",
+    "@types/yargs": "^15.0.4",
+    "babel-loader": "^8.1.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.1.1",
+    "terser-webpack-plugin": "^2.3.5",
+    "ts-loader": "^7.0.1",
+    "tslint": "^6.1.1",
+    "typescript": "^3.8.3",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   }
 }
