@@ -1,12 +1,12 @@
 import fs from "fs";
+import path from "path";
 import {
     emptyConfig,
     credentials
 } from "./generators";
+import { get } from "../settings";
 
 import ProjectType from "../project/ProjectType";
-
-const pathToConfig = "./config.json"
 
 export const resetProjectTimeout = (projectName: string): void => {
     const project = getProject(projectName);
@@ -126,10 +126,11 @@ export const establishConfig = () => {
 }
 
 export const open = (): any => {
-    if (!fs.existsSync(pathToConfig)) {
+
+    if (!fs.existsSync(getConfigPath())) {
         reset()
     }
-    return JSON.parse(fs.readFileSync(pathToConfig, 'utf8'));
+    return JSON.parse(fs.readFileSync(getConfigPath(), 'utf8'));
 }
 
 export const reset = (): any => {
@@ -138,13 +139,18 @@ export const reset = (): any => {
 }
 
 export const write = (config: any): boolean => {
+    console.log(config, getConfigPath())
     try {
-        fs.writeFileSync(pathToConfig, JSON.stringify(config, null, 4), 'ascii')
+        fs.writeFileSync(getConfigPath(), JSON.stringify(config, null, 4), 'ascii')
         return true;
     } catch {
         return false;
     }
 }
+
+export const getConfigPath = (): string =>
+    path.join(get("configPath"), "config.json");
+
 
 export const print = () => {
     console.log(JSON.stringify(open(), null, 4));

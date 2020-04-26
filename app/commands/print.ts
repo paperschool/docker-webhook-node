@@ -1,4 +1,6 @@
 import Commander, { Command } from "commander";
+import inquirer from "inquirer";
+import { find, set } from "../settings";
 import {
     print as configPrint
 } from "../config";
