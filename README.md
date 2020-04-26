@@ -93,8 +93,30 @@ Use this token in the webhook url on docker hub eg:
 
 <url>/?name=some-project-name&token=59b9aea675f538498ac2f73be70ee9f010d08949216ca6ecacc7dfc340b6d424ec651352de735e9ea49701523442288c9425c2895dabbd7eb57aa738c84191c1
 ```
+### Adding Dockerhub Webhook
 
+The generated url can then be copied into the webhook property inside the repo on dockerhub. Any time the repo is updated, a request will be made to that url including both the project block name property and the token, if both match the config on the listening server, then the application will redeploy the image.
 
+![image](./screenshots/dockerhub.jpg)
+
+### Authenticating Request
+
+When a webhook hits the server the request url has two parameters, a project block name and a token. If both the project block name exists in the server config and the token matches the token in the project block then the web hook is accepted. 
+
+The request body ( provided by docker hub ) is then validated for all required information to successfully pull the image. 
+
+### Re/Deployment
+
+When the application recieves an authenticated request, the request body is scraped of all required information and an embedded script is ran :
+
+- The config login credentials are used to login to docker
+- The docker image repo outlined in the request body is pulled
+- Any existing versions of the image are stopped and deleted
+- The pulled image is then started given the external and internal ports in the project block
+
+When the re-deployment is successful a variable is updated in the project block with the current time which is used as a timeout to stop repeated attempts on the webhook.  
+
+Finally the callback url in the webhook is hit to close the loop.
 
 ## Authors
 
@@ -106,6 +128,5 @@ This project is licensed under the MIT License
 
 ## Built With
 
-* [Node](http://www.dropwizard.io/1.0.2/docs/) - Runtime, Package Manager, CLI.
-* [PKG]() - Packaging tool for binaries.
+* [PKG](https://github.com/zeit/pkg) - Packaging tool for producing binaries from node projects.
 
