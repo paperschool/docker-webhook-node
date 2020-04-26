@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-const settingsPath = path.resolve(process.cwd(), "settings.json");
+const settingsPath = path.resolve(__dirname, "settings.json");
 
 type Settings = {
     configPath: string
