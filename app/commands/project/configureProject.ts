@@ -45,16 +45,15 @@ const configureProject = async (edit?: boolean): Promise<ProjectConfiguration> =
             {
                 type: 'checkbox',
                 name: 'dependencies',
-                message: 'Select Dependencies?:',
+                message: 'Select Dependencies or Press Enter:',
                 choices: getDependencyNames()
             },
             {
                 type: 'input',
                 name: "networkName",
-                message: "Name of network (my-app-network):"
+                message: "Name of Network (my-app-network) or Press Enter:"
             },
         ]).then((projectConfiguration: ProjectConfiguration) => {
-
             resolve(projectConfiguration);
         })
     })

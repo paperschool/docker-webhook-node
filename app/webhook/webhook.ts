@@ -67,6 +67,11 @@ const createNetwork = async (projectName: string): Promise<boolean> => {
 
     const { networkName } = getProject(projectName);
 
+    if (networkName === "") {
+        console.green(`No Docker Network Specified!`);
+        return true;
+    }
+
     console.title(`${projectName} - Setting Up Network`)
 
     if (await networkExists(networkName)) {
@@ -208,11 +213,13 @@ const startProject = async (projectName: string, webhookRequestBody: any): Promi
         return false;
     }
 
-    if (!await networkConnect(networkName, projectName)) {
-        console.red(`Project ${projectName} Failed to Attach to Network ${networkName}...`)
-        return false;
+    if (networkName !== "") {
+        if (!await networkConnect(networkName, projectName)) {
+            console.red(`Project ${projectName} Failed to Attach to Network ${networkName}...`)
+            return false;
+        }
+        console.green(`Project ${projectName} Attached to Network ${networkName} Successfully!`)
     }
-    console.green(`Project ${projectName} Attached to Network ${networkName} Successfully!`)
 
     return true;
 

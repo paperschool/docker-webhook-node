@@ -13,6 +13,11 @@ const newProject = (projectConfiguration: ProjectConfiguration): boolean => {
         return false;
     }
 
+    if (projectConfiguration.dependencies.length !== 0 && projectConfiguration.networkName === "") {
+        console.red(`Project ${projectConfiguration.projectName} Requires Network Name if Using Dependencies...`);
+        return false;
+    }
+
     return saveProject(projectConfiguration)
 }
 
