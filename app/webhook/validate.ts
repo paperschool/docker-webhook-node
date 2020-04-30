@@ -1,5 +1,5 @@
 import {
-    getToken,
+    getProjectToken,
     projectExists,
     getTimeout,
     getProjectLastEdited
@@ -32,7 +32,7 @@ export const checkTimeout = (projectName: string): boolean => {
 }
 
 export const validateToken = (projectName: string, token: string): boolean => {
-    if (token !== getToken(projectName)) {
+    if (token !== getProjectToken(projectName)) {
         console.red(`Token Mismatch for Project: ${projectName}`)
         return false;
     }

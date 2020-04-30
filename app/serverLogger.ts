@@ -5,6 +5,7 @@ declare global {
         blue(...args: any[]): void;
         green(...args: any[]): void;
         yellow(...args: any[]): void;
+        title(args: string): void;
     }
 
     interface Number {
@@ -55,6 +56,14 @@ const configureLogger = () => {
 
     console.yellow = (...value: any[]) => {
         console.server(chalk.yellow(...value));
+    }
+
+    console.title = (value: any) => {
+        console.server()
+        console.server(chalk.yellow(value));
+        console.server(chalk.yellow("*".repeat(value.length)));
+        console.server()
+
     }
 }
 

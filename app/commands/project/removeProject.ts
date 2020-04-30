@@ -1,19 +1,31 @@
 import Commander, { Command } from "commander";
+import inquirer from "inquirer";
 import {
-    removeProject as removeProjectConfig
+    removeProject as removeProjectConfig, getProjectNames
 } from "../../config";
 
 const removeProject: Commander.Command = new Command("remove")
     .command("remove")
-    .requiredOption('-pn, --project-name <projectName>', 'Name of Exiting Project Name to be Deleted.')
-    .description("Edit Existing Docker Webhook Project")
-    .action(({ projectName }: any) => {
+    .description("Remove Existing Docker Webhook Project")
+    .action(() => {
 
-        if (removeProjectConfig(projectName)) {
-            console.green("Project Removed Successfully!")
-        } else {
-            console.red("Project Removal Unsuccessful...")
-        }
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "projectToBeRemoved",
+                messages: "Choose Project to be Removed:",
+                choices: getProjectNames()
+            }
+        ]).then(({ projectToBeRemoved }) => {
+
+            if (removeProjectConfig(projectToBeRemoved)) {
+                console.green("Project Removed Successfully!")
+            } else {
+                console.red("Project Removal Unsuccessful...")
+            }
+        });
+
+
     })
 
 export default removeProject;

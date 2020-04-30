@@ -4,6 +4,8 @@ type Project = {
     dateTimeCreated: number;
     dateTimeEdited: number;
     token: string;
+    dependencies: string[];
+    networkName: string;
     sha?: string;
 }
 

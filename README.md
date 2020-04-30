@@ -1,3 +1,5 @@
+**n.b.** - Large Refactor To accomodate dependencys for container restarting, expect update to readme to reflect this soon.
+
 # Docker Node Webhook
 
 The purpose of this project was to create a light weight server for intercepting [Docker Hub Webhook](https://docs.docker.com/docker-hub/webhooks/) Requests to trigger containeer restarts for use within a simplistic ci/cd system. The application runs as a cli allows for starting the server as well as for managing the configuration the server will use. 

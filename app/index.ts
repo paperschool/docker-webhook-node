@@ -1,8 +1,9 @@
 import Commander, { Command } from "commander";
-import os from "os";
 import {
     setupCommands
 } from "./commands";
+import sanitiseConfigPath from "./commands/settings/sanitiseConfigPath";
+import { reset } from "./config";
 import { get, set } from "./settings";
 import inquirer from "inquirer";
 import serverLogger from "./serverLogger";
@@ -25,7 +26,8 @@ if (!get("configPath")) {
 
         let newConfigPath = configPath || process.cwd()
 
-        set({ configPath: newConfigPath.replace("~", os.homedir()) })
+        set({ configPath: sanitiseConfigPath(newConfigPath) })
+        reset()
         setupCommands(app);
         app.parse(process.argv);
     })

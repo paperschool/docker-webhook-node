@@ -1,8 +1,11 @@
+import { v4 } from "uuid";
+
 export const emptyConfig = () => {
     return {
         ...credentials("", ""),
         timeout: 10000,
-        projects: {}
+        projects: {},
+        dependencies: {},
     }
 }
 
@@ -14,3 +17,5 @@ export const credentials = (username: string, password: string) => {
         }
     }
 }
+
+export const uuid = () => v4()
