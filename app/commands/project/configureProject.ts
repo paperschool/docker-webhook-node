@@ -3,6 +3,7 @@ import { getDependencyNames, getProjectNames } from "../../config";
 
 export interface ProjectConfiguration {
     projectName: string;
+    repoName: string;
     portIn: number;
     portOut: number;
     dependencies: string[];
@@ -27,6 +28,11 @@ const configureProject = async (edit?: boolean): Promise<ProjectConfiguration> =
 
         inquirer.prompt([
             edit ? editProjectNameQuestion : newProjectNameQuestion,
+            {
+                type: 'input',
+                name: "repoName",
+                message: "RepoName (Docker Username):"
+            },
             {
                 type: 'input',
                 name: "portIn",

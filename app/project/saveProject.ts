@@ -9,6 +9,7 @@ import { ProjectConfiguration } from "../commands/project/configureProject";
 
 const saveProject = ({
     projectName,
+    repoName,
     portIn,
     portOut,
     dependencies,
@@ -21,6 +22,7 @@ const saveProject = ({
     newHookOutput(projectName, token);
 
     const newProject: ProjectType = {
+        repoName: repoName || existingProject.repoName,
         portIn: portIn || existingProject.portIn,
         portOut: portOut || existingProject.portOut,
         dateTimeCreated: existingProject ? existingProject.dateTimeCreated : Date.now(),

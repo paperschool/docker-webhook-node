@@ -187,7 +187,6 @@ const startProject = async (projectName: string, webhookRequestBody: any): Promi
     }
     console.green(`Project ${projectName} Image Pulled Successfully!`)
 
-
     if (!await stop(projectName)) {
         console.red(`Project ${projectName} Container Failed to stop...`)
     }

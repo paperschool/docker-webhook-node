@@ -1,4 +1,5 @@
 type Project = {
+    repoName: string;
     portIn: number;
     portOut: number;
     dateTimeCreated: number;
