@@ -19,13 +19,15 @@ const startProject: Commander.Command = new Command("start")
 
         inquirer.prompt([
             {
-                type: "list",
-                name: "projectName",
-                messages: "Choose Project to be Inspect:",
+                type: "checkbox",
+                name: "projectNames",
+                messages: "Select Project/s to be started:",
                 choices: currentProjects
             }
-        ]).then(({ projectName }) => {
-            projectStarter(projectName);
+        ]).then(({ projectNames }) => {
+            projectNames.forEach(async (projectName: string) => {
+                await projectStarter(projectName);
+            });
         });
     })
 
