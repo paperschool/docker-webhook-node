@@ -24,7 +24,7 @@
     "chalk": "^4.0.0",
     "commander": "^5.0.0",
     "crypto-random-string": "^1.0.0",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "inquirer": "^7.1.0",
     "node-fetch": "^2.6.0",
     "shelljs": "^0.8.3",
